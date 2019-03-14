@@ -1,0 +1,13 @@
+<%- include('partials/header'); -%>
+<h1>Home</h1>
+<div>
+  <p> <%= homePage %> </p>
+</div>
+<div>
+  <% totalPosts.forEach(function(entry) { %>
+      <h2> <%= entry.title %> </h2>
+      <div class="truncate"> <%= entry.body %> </div>
+      <a href="/posts/<%= entry.title %>">Read More</a>
+  <% });                                  %>
+</div>
+<%- include('partials/footer'); -%>
