@@ -4,10 +4,10 @@
   <p> <%= homePage %> </p>
 </div>
 <div>
-  <% totalPosts.forEach(function(entry) { %>
-      <h2> <%= entry.title %> </h2>
-      <div class="truncate"> <%= entry.body %> </div>
-      <a href="/posts/<%= entry.title %>">Read More</a>
+  <% totalPosts.forEach(function(post) { %>
+      <h2> <%= post.title %> </h2>
+      <div class="truncate"> <%= post.body %> </div>
+      <a href="/posts/<%= post._id %>">Read More</a>
   <% });                                  %>
 </div>
 <%- include('partials/footer'); -%>

@@ -48,6 +48,7 @@ app.get("/", function(req,res) {
       });
 
       res.render("home", {homePage: homeStartingContent, totalPosts: postArr});
+      postArr = []; //to prevent repeated docs being displayed every time we redirect to home page
     }
   });
 });
@@ -73,18 +74,25 @@ app.post("/compose", function(req,res) {
   });
 
   // save into posts collection
-  post.save();
+  post.save(function(err) {
+    if (!err) {
+      res.redirect("/");
+    }
+  });
 
-  res.redirect("/");
 });
 
 app.get("/posts/:postID", function(req,res) {
-  //if requested post's ID is in post[], meaning it exists
-  posts.forEach(function(entry) {
-    if(lodash.lowerCase(entry.title) === lodash.lowerCase(req.params.postID)) {//when looking if requested post is in post[], ignore casing and spaces with lodash
-      res.render("post", {postTitle: entry.title, postContent: entry.body});
+  // console.log(req.params.postID)
+
+  // search thru Post collection for an ID of the requested id (req.params.postID)
+  Post.findOne({_id: req.params.postID}, function(err, foundPost){
+    if (!err) {
+      //console.log(foundPost.title);
+      res.render("post", {postTitle: foundPost.title, postContent: foundPost.body});
     }
   });
+
 });
 
 
