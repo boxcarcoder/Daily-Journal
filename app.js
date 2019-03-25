@@ -18,7 +18,7 @@ const postSchema = new mongoose.Schema({
   body: String
 });
 
-// create a model of a post
+// create a model of a post & create a posts collection
 const Post = mongoose.model("Post", postSchema);
 
 mongoose.connect('mongodb://localhost:27017/blogDB', {useNewUrlParser: true});
@@ -67,8 +67,10 @@ app.get("/compose", function(req, res) {
 
 app.post("/compose", function(req,res) {
 
+  console.log(req.body.inputTitle);
+
   // use the Post model to create a new post document
-  const post = new Post({
+  let post = new Post({
     title: req.body.inputTitle,
     body: req.body.inputPost
   });
@@ -79,13 +81,13 @@ app.post("/compose", function(req,res) {
       res.redirect("/");
     }
   });
-
 });
 
 app.get("/posts/:postID", function(req,res) {
   // console.log(req.params.postID)
 
   // search thru Post collection for an ID of the requested id (req.params.postID)
+  // req.params is for route paramaters (express routing), not form data. Req.body is form data
   Post.findOne({_id: req.params.postID}, function(err, foundPost){
     if (!err) {
       //console.log(foundPost.title);
@@ -95,6 +97,30 @@ app.get("/posts/:postID", function(req,res) {
 
 });
 
+app.post("/delete", function(req,res) {
+
+  //let test = req.body;
+  // console.log(test); // JS object
+
+  // let test2 = JSON.stringify(req.body);
+  // console.log(test2); // JSON object
+
+  //obtain post title of post to be deleted
+  let reqJsObj = req.body;
+  let titleField = Object.keys(reqJsObj)[0];
+  console.log(titleField);
+
+  //delete document from collection
+  Post.findOneAndDelete({"title" : titleField}, function(err) {
+    if (!err) {
+      res.redirect("/");
+    }
+    else {
+      console.log("Error while deleting document from collection");
+    }
+  });
+
+});
 
 
 

@@ -7,7 +7,7 @@
   <% totalPosts.forEach(function(post) { %>
       <h2> <%= post.title %> </h2>
       <div class="truncate"> <%= post.body %> </div>
-      <a href="/posts/<%= post._id %>">Read More</a>
+      <a href="/posts/<%= post._id %>" >Read More</a>
   <% });                                  %>
 </div>
 <%- include('partials/footer'); -%>

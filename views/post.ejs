@@ -3,4 +3,9 @@
 <div>
   <p> <%= postContent %> </p>
 </div>
+
+<form action="/delete" method="post">
+  <button type="submit" class="btn btn-danger btn-xs" name="<%= postTitle %>">Delete</button>
+</form>
+
 <%- include('partials/footer'); -%>
