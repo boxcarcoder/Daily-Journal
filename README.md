@@ -11,7 +11,7 @@ I use MongoDB and mongoose to create a database which will contain a collection 
 On each post's page, there is an option to delete the post.
 
 To-Do:
-Add database to store entries. [X]
-Give option to edit posts on each post's page. [ ]
-Develop API to handle communication between the server and database.[ ]
+* Add database to store entries. [X]
+* Give option to edit posts on each post's page. [X]
+* Develop API to handle communication between the server and database.[ ]
 
