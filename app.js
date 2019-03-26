@@ -103,21 +103,18 @@ app.get("/posts/:postID", function(req,res) {
     if (!err) {
       //console.log(foundPost.title);
       res.render("post", {postTitle: foundPost.title, postContent: foundPost.body});
+      currentPostTitle = foundPost.title; //get the post title of the corresponding post ID
     }
   });
-
 });
 
 //post requests on /delete are from the form action in post.ejs
 //when delete is pressed, delete from collection and redirect to home page
 app.post("/delete", function(req,res) {
 
-  //obtain post title of post to be deleted
-  let reqJsObj = req.body;  // JS object. Returns { 'Testing 1:' ' ' } because the name field in the post request of post.ejs is the post title field
-  let titleField = Object.keys(reqJsObj)[0]; //returns Testing 1
-
   //delete the document specified by the post title from Post collection
-  Post.findOneAndDelete({"title" : titleField}, function(err) {
+  //currentPostTitle is found when we go to a post's individual page
+  Post.findOneAndDelete({"title" : currentPostTitle}, function(err) {
     if (!err) {
       res.redirect("/");
     }
@@ -131,16 +128,10 @@ app.post("/delete", function(req,res) {
 //post requests on /editBtn are from the form action in post.ejs
 //when edit is pressed, render the edit page
 app.post("/edit", function(req, res) {
-    //console.log(req.body);
 
-    // get title of the post request to /edit, which is from post.ejs
-    let reqJsObj = req.body;  // JS object. Returns { 'Testing 1:' ' ' }
-    let titleField = Object.keys(reqJsObj)[0]; //returns Testing 1
+  //currentPostTitle is found when we go to a post's individual page
+  res.render("edit", {postTitle: currentPostTitle});
 
-    res.render("edit", {postTitle: titleField});
-
-    currentPostTitle = titleField; //when the edit button is pressed, retrieve the title of the current post for .post("/editPost")
-    //console.log(currentPostTitle);
 });
 
 // now that edit page is rendered, it will provide a post method to /editPost
