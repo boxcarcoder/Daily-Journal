@@ -16,7 +16,7 @@
 }
 
 .footer-padding {
-	padding-bottom: 60px;
+	padding-bottom: 400px;
 }
 
 .footer {
@@ -45,4 +45,8 @@
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
+}
+
+.postBtnsContainer form {
+  display: inline;
 }

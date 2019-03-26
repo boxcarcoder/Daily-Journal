@@ -4,8 +4,14 @@
   <p> <%= postContent %> </p>
 </div>
 
-<form action="/delete" method="post">
-  <button type="submit" class="btn btn-danger btn-xs" name="<%= postTitle %>">Delete</button>
-</form>
+<div class="postBtnsContainer" >
+  <form action="/delete" method="post">
+    <button type="submit" class="btn btn-danger btn-xs" name="<%=postTitle%>">Delete</button>
+  </form>
+
+  <form action="/edit" method="post">
+    <button type="submit" class="btn btn-primary btn-xs" name="<%=postTitle%>" >Edit</button>
+  </form>
+</div>
 
 <%- include('partials/footer'); -%>
