@@ -50,3 +50,16 @@
 .postBtnsContainer form {
   display: inline;
 }
+
+@font-face {
+  font-family: 'playfairDisplay';
+  src: url('../fonts/playfairDisplay/PlayfairDisplay-Bold.otf');
+}
+
+.playfairFont {
+  font-family: "playfairDisplay", Georgia, "Times New Roman";
+}
+
+textarea {
+  white-space: pre-wrap;
+}

@@ -1,16 +1,15 @@
 <%- include('partials/header'); -%>
-<h1><%= postTitle %></h1>
+<h1 class="playfairFont"><%= postTitle %></h1>
 <div>
-  <p> <%= postContent %> </p>
+  <p style="white-space: pre-line"> <%= postContent %> </p>
 </div>
 
 <div class="postBtnsContainer" >
-  <form action="/delete" method="post">
-    <button type="submit" class="btn btn-danger btn-xs" name="<%=postTitle%>">Delete</button>
-  </form>
-
   <form action="/edit" method="post">
-    <button type="submit" class="btn btn-primary btn-xs" name="<%=postTitle%>" >Edit</button>
+    <button type="submit" class="btn btn-primary btn-xs">Edit</button>
+  </form>
+  <form action="/delete" method="post">
+    <button type="submit" class="btn btn-danger btn-xs">Delete</button>
   </form>
 </div>
 

@@ -8,9 +8,11 @@ const mongoose = require("mongoose");
 
 var postArr = [];
 var currentPostTitle;
+var currentPostBody;
 
-const homeStartingContent = "Lacus vel facilisis volutpat est velit egestas dui id ornare. Semper auctor neque vitae tempus quam. Sit amet cursus sit amet dictum sit amet justo. Viverra tellus in hac habitasse. Imperdiet proin fermentum leo vel orci porta. Donec ultrices tincidunt arcu non sodales neque sodales ut. Mattis molestie a iaculis at erat pellentesque adipiscing. Magnis dis parturient montes nascetur ridiculus mus mauris vitae ultricies. Adipiscing elit ut aliquam purus sit amet luctus venenatis lectus. Ultrices vitae auctor eu augue ut lectus arcu bibendum at. Odio euismod lacinia at quis risus sed vulputate odio ut. Cursus mattis molestie a iaculis at erat pellentesque adipiscing.";
-const aboutContent = "Hac habitasse platea dictumst vestibulum rhoncus est pellentesque. Dictumst vestibulum rhoncus est pellentesque elit ullamcorper. Non diam phasellus vestibulum lorem sed. Platea dictumst quisque sagittis purus sit. Egestas sed sed risus pretium quam vulputate dignissim suspendisse. Mauris in aliquam sem fringilla. Semper risus in hendrerit gravida rutrum quisque non tellus orci. Amet massa vitae tortor condimentum lacinia quis vel eros. Enim ut tellus elementum sagittis vitae. Mauris ultrices eros in cursus turpis massa tincidunt dui.";
+const homeStartingContent = "Welcome to my personal blog. The webpages you see here, as well as the database to store blog posts, are all set up by me! I am an aspiring software engineer, on the journey to better myself every day. Whether it's honing my programming skills, practicing photo compositions, or reading books on my hobbies, it is time to improve myself on a regular basis. I created this blog website to keep track of my progress on all facets. ";
+const aboutContent1 = "My name is Brendan Cheng and I am currently 24 years of age. Professionally, I am a software engineer currently in the aerospace industry, primarily programming in C++. I am currently putting my focus into web development, learning full stack development. The thought of being able to create my own web applications is very exciting! The possibilities seem endless to what I can create.";
+const aboutContent2 = "Outside of software engineering, I am developing a passion for media, with a focus on photo composition and film composition. Memories are precious, so why not take the best photos? I am also interested in film composition so I can create videos that I can share. Sharing is caring after all!"
 const contactContent = "Scelerisque eleifend donec pretium vulputate sapien. Rhoncus urna neque viverra justo nec ultrices. Arcu dui vivamus arcu felis bibendum. Consectetur adipiscing elit duis tristique. Risus viverra adipiscing at in tellus integer feugiat. Sapien nec sagittis aliquam malesuada bibendum arcu vitae. Consequat interdum varius sit amet mattis. Iaculis nunc sed augue lacus. Interdum posuere lorem ipsum dolor sit amet consectetur adipiscing elit. Pulvinar elementum integer enim neque. Ultrices gravida dictum fusce ut placerat orci nulla. Mauris in aliquam sem fringilla ut morbi tincidunt. Tortor posuere ac ut consequat semper viverra nam libero.";
 
 // create the schema for new posts
@@ -47,7 +49,7 @@ app.get("/", function(req,res) {
       returnedPosts.forEach(function(posts){
         postArr.push(posts);
       });
-
+      
       res.render("home", {homePage: homeStartingContent, totalPosts: postArr});
       postArr = []; //to prevent repeated docs being displayed every time we redirect to home page
     }
@@ -62,7 +64,7 @@ app.post("/composeBtn", function(req,res) {
 
 //access /about thru href defined in header.ejs
 app.get("/about", function(req,res) {
-  res.render("about", {aboutPage: aboutContent});
+  res.render("about", {aboutPage1: aboutContent1, aboutPage2: aboutContent2});
 });
 
 //access /contact thru href defined in header.ejs
@@ -77,7 +79,6 @@ app.get("/compose", function(req, res) {
 
 //post requests on /compose are from the form action in compose.ejs
 app.post("/compose", function(req,res) {
-  //console.log(req.body);
 
   // use the Post model to create a new post document
   let post = new Post({
@@ -104,6 +105,7 @@ app.get("/posts/:postID", function(req,res) {
       //console.log(foundPost.title);
       res.render("post", {postTitle: foundPost.title, postContent: foundPost.body});
       currentPostTitle = foundPost.title; //get the post title of the corresponding post ID
+      currentPostBody = foundPost.body;
     }
   });
 });
@@ -128,9 +130,8 @@ app.post("/delete", function(req,res) {
 //post requests on /editBtn are from the form action in post.ejs
 //when edit is pressed, render the edit page
 app.post("/edit", function(req, res) {
-
   //currentPostTitle is found when we go to a post's individual page
-  res.render("edit", {postTitle: currentPostTitle});
+  res.render("edit", {postTitle: currentPostTitle, postContent: currentPostBody});
 
 });
 
@@ -139,6 +140,7 @@ app.post("/edit", function(req, res) {
 app.post("/editPost", function(req,res) {
 
   //update the document specified by the post title from Post collection
+  //update the body field of the document with currentPostTitle as its title
   Post.findOneAndUpdate({"title": currentPostTitle}, {"body": req.body.inputPost },  function(err) {
     if (!err) {
       console.log("Successfully updated document in collection");
@@ -149,14 +151,6 @@ app.post("/editPost", function(req,res) {
     }
   });
 });
-
-
-
-
-
-
-
-
 
 
 app.listen(3000, function() {

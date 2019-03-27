@@ -1,8 +1,8 @@
 <%- include('partials/header'); -%>
-<h2>Edit <%=postTitle%></h2>
+<h2 class="playfairFont">Edit <%=postTitle%></h2>
 <form action="/editPost" method="post">
   <h6>Post</h6>
-  <textarea rows="5" cols="160" name="inputPost"></textarea>
+  <textarea rows="5" cols="160" name="inputPost"><%=postContent%></textarea>
   <button type="submit" class="btn btn-primary submitButton" >Edit</button>
 </form>
 <%- include('partials/footer'); -%>
