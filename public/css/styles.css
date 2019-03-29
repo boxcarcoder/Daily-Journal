@@ -60,6 +60,10 @@
   font-family: "playfairDisplay", Georgia, "Times New Roman";
 }
 
-textarea {
-  white-space: pre-wrap;
+.homeContainer {
+  margin: 0;
+  display: inline-block;
 }
+/* textarea {
+  white-space: pre-wrap;
+} */

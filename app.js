@@ -10,10 +10,10 @@ var postArr = [];
 var currentPostTitle;
 var currentPostBody;
 
-const homeStartingContent = "Welcome to my personal blog. The webpages you see here, as well as the database to store blog posts, are all set up by me! I am an aspiring software engineer, on the journey to better myself every day. Whether it's honing my programming skills, practicing photo compositions, or reading books on my hobbies, it is time to improve myself on a regular basis. I created this blog website to keep track of my progress on all facets. ";
-const aboutContent1 = "My name is Brendan Cheng and I am currently 24 years of age. Professionally, I am a software engineer currently in the aerospace industry, primarily programming in C++. I am currently putting my focus into web development, learning full stack development. The thought of being able to create my own web applications is very exciting! The possibilities seem endless to what I can create.";
-const aboutContent2 = "Outside of software engineering, I am developing a passion for media, with a focus on photo composition and film composition. Memories are precious, so why not take the best photos? I am also interested in film composition so I can create videos that I can share. Sharing is caring after all!"
-const contactContent = "Scelerisque eleifend donec pretium vulputate sapien. Rhoncus urna neque viverra justo nec ultrices. Arcu dui vivamus arcu felis bibendum. Consectetur adipiscing elit duis tristique. Risus viverra adipiscing at in tellus integer feugiat. Sapien nec sagittis aliquam malesuada bibendum arcu vitae. Consequat interdum varius sit amet mattis. Iaculis nunc sed augue lacus. Interdum posuere lorem ipsum dolor sit amet consectetur adipiscing elit. Pulvinar elementum integer enim neque. Ultrices gravida dictum fusce ut placerat orci nulla. Mauris in aliquam sem fringilla ut morbi tincidunt. Tortor posuere ac ut consequat semper viverra nam libero.";
+var homeContent = "Welcome to my personal blog. The webpages you see here, as well as the database to store blog posts, are all set up by me! I am an aspiring software engineer, on the journey to better myself every day. Whether it's honing my programming skills, practicing photo compositions, or reading books on my hobbies, it is time to improve myself on a regular basis. I created this blog website to keep track of my progress on all facets. ";
+var aboutContent1 = "My name is Brendan Cheng and I am currently 24 years of age. Professionally, I am a software engineer currently in the aerospace industry, primarily programming in C++. I am currently putting my focus into web development, learning full stack development. The thought of being able to create my own web applications is very exciting! The possibilities seem endless to what I can create.";
+var aboutContent2 = "Outside of software engineering, I am developing a passion for media, with a focus on photo composition and film composition. Memories are precious, so why not take the best photos? I am also interested in film composition so I can create videos that I can share. Sharing is caring after all!"
+var contactContent = "Scelerisque eleifend donec pretium vulputate sapien. Rhoncus urna neque viverra justo nec ultrices. Arcu dui vivamus arcu felis bibendum. Consectetur adipiscing elit duis tristique. Risus viverra adipiscing at in tellus integer feugiat. Sapien nec sagittis aliquam malesuada bibendum arcu vitae. Consequat interdum varius sit amet mattis. Iaculis nunc sed augue lacus. Interdum posuere lorem ipsum dolor sit amet consectetur adipiscing elit. Pulvinar elementum integer enim neque. Ultrices gravida dictum fusce ut placerat orci nulla. Mauris in aliquam sem fringilla ut morbi tincidunt. Tortor posuere ac ut consequat semper viverra nam libero.";
 
 // create the schema for new posts
 const postSchema = new mongoose.Schema({
@@ -23,6 +23,14 @@ const postSchema = new mongoose.Schema({
 
 // create a model of a post & create a posts collection
 const Post = mongoose.model("Post", postSchema);
+
+// create schema, model, and collection for writer info (home, about me, contact)
+const writerSchema = new mongoose.Schema({
+  title: String,
+  body: String
+});
+
+const Writer = new mongoose.model("Writer", writerSchema);
 
 mongoose.connect('mongodb://localhost:27017/blogDB', {useNewUrlParser: true});
 
@@ -42,15 +50,28 @@ app.get("/", function(req,res) {
     }
     else if (returnedPosts.length === 0) {
       // if there are no posts, display the homepage. postArr will be empty.
-      res.render("home", {homePage: homeStartingContent, totalPosts: postArr});
+      res.render("home", {homePage: homeContent, totalPosts: postArr});
     }
     else {
       // if there are posts in the collection, display them
       returnedPosts.forEach(function(posts){
         postArr.push(posts);
       });
-      
-      res.render("home", {homePage: homeStartingContent, totalPosts: postArr});
+
+      //as soon as server is loaded, we get here
+      // //find home content from writer collection
+      // Writer.find({"title": "Home"}, function(err, homeInfo) { //homeInfo returns the whole collection since all titles are home
+      //  have to figure out how to deal with all entries in writer collection having same 'home' title. How to differentiate past entries to most current? 
+      //  if (err) {
+      //     console.log("Error in getting home content from the writer collection.");
+      //   }
+      //   else {
+      //     console.log(homeInfo);
+      //     homeContent = homeInfo;
+      //   }
+      // })
+
+      res.render("home", {homePage: homeContent, totalPosts: postArr});
       postArr = []; //to prevent repeated docs being displayed every time we redirect to home page
     }
   });
@@ -152,6 +173,27 @@ app.post("/editPost", function(req,res) {
   });
 });
 
+// access /editHome from home.ejs
+app.get("/editHome", function(req,res) {
+  res.render("editHome");
+});
+
+// post requests on /editHome are from editHome.ejs
+app.post("/editHome", function(req,res) {
+  // use the writer model to create a new writerInfo document
+  let writer = new Writer ({
+    title: "Home",
+    body: req.body.inputHome
+  });
+
+  // save into writerInfo collection
+  writer.save(function(err) {
+    if (!err) {
+      homeContent = req.body.inputHome;
+      res.redirect("/");
+    }
+  });
+});
 
 app.listen(3000, function() {
   console.log("Server started on port 3000");
