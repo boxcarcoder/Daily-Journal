@@ -58,21 +58,21 @@ app.get("/", function(req,res) {
         postArr.push(posts);
       });
 
-      //as soon as server is loaded, we get here
-      // //find home content from writer collection
-      // Writer.find({"title": "Home"}, function(err, homeInfo) { //homeInfo returns the whole collection since all titles are home
-      //  have to figure out how to deal with all entries in writer collection having same 'home' title. How to differentiate past entries to most current? 
-      //  if (err) {
-      //     console.log("Error in getting home content from the writer collection.");
-      //   }
-      //   else {
-      //     console.log(homeInfo);
-      //     homeContent = homeInfo;
-      //   }
-      // })
-
-      res.render("home", {homePage: homeContent, totalPosts: postArr});
-      postArr = []; //to prevent repeated docs being displayed every time we redirect to home page
+      //as soon as server is loaded, we get here. Find home content from writer collection
+      Writer.findOne({"title": "Home"}, {}, { sort:{'_id': -1} }, function(err, homeInfo) { //find the latest Home entry in writers collection
+        if (err) {
+          console.log("Error in getting home content from the writer collection.");
+        }
+        else if (homeInfo == null) {
+          res.render("home", {homePage: homeContent, totalPosts: postArr});
+          postArr = []; //to prevent repeated docs being displayed every time we redirect to home page
+        }
+        else {
+          homeContent = homeInfo.body;
+          res.render("home", {homePage: homeContent, totalPosts: postArr});
+          postArr = []; //to prevent repeated docs being displayed every time we redirect to home page
+        }
+      });
     }
   });
 });
