@@ -1,5 +1,5 @@
 # Daily-Journal
-A full stack development of a daily journal. 
+A front end and back end development of a daily journal. 
 
 I use the Express module for my server to load up EJS templates to the client. 
 
