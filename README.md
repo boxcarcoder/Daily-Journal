@@ -1,5 +1,5 @@
 # Daily-Journal
-A full stack development of a daily journal. 
+A front end and back end development of a daily journal. 
 
 I use the Express module for my server to load up EJS templates to the client. 
 
@@ -13,5 +13,6 @@ On each post's page, there is an option to delete the post.
 To-Do:
 * Add database to store entries. [X]
 * Give option to edit posts on each post's page. [X]
+* Give option to edit home, about me, and contact pages. [ ]
 * Develop API to handle communication between the server and database.[ ]
 
