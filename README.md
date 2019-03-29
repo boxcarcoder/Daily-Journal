@@ -13,6 +13,6 @@ On each post's page, there is an option to delete the post.
 To-Do:
 * Add database to store entries. [X]
 * Give option to edit posts on each post's page. [X]
-* Give option to edit home, about me, and contact pages. [ ]
+* Give option to edit home, about me, and contact pages. [X]
 * Develop API to handle communication between the server and database.[ ]
 
