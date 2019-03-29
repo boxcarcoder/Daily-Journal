@@ -11,8 +11,7 @@ var currentPostTitle;
 var currentPostBody;
 
 var homeContent = "Welcome to my personal blog. The webpages you see here, as well as the database to store blog posts, are all set up by me! I am an aspiring software engineer, on the journey to better myself every day. Whether it's honing my programming skills, practicing photo compositions, or reading books on my hobbies, it is time to improve myself on a regular basis. I created this blog website to keep track of my progress on all facets. ";
-var aboutContent1 = "My name is Brendan Cheng and I am currently 24 years of age. Professionally, I am a software engineer currently in the aerospace industry, primarily programming in C++. I am currently putting my focus into web development, learning full stack development. The thought of being able to create my own web applications is very exciting! The possibilities seem endless to what I can create.";
-var aboutContent2 = "Outside of software engineering, I am developing a passion for media, with a focus on photo composition and film composition. Memories are precious, so why not take the best photos? I am also interested in film composition so I can create videos that I can share. Sharing is caring after all!"
+var aboutContent = "My name is Brendan Cheng and I am currently 24 years of age. Professionally, I am a software engineer currently in the aerospace industry, primarily programming in C++. I am currently putting my focus into web development, learning full stack development. The thought of being able to create my own web applications is very exciting! The possibilities seem endless to what I can create. Outside of software engineering, I am developing a passion for media, with a focus on photo composition and film composition. Memories are precious, so why not take the best photos? I am also interested in film composition so I can create videos that I can share. Sharing is caring after all!"
 var contactContent = "Scelerisque eleifend donec pretium vulputate sapien. Rhoncus urna neque viverra justo nec ultrices. Arcu dui vivamus arcu felis bibendum. Consectetur adipiscing elit duis tristique. Risus viverra adipiscing at in tellus integer feugiat. Sapien nec sagittis aliquam malesuada bibendum arcu vitae. Consequat interdum varius sit amet mattis. Iaculis nunc sed augue lacus. Interdum posuere lorem ipsum dolor sit amet consectetur adipiscing elit. Pulvinar elementum integer enim neque. Ultrices gravida dictum fusce ut placerat orci nulla. Mauris in aliquam sem fringilla ut morbi tincidunt. Tortor posuere ac ut consequat semper viverra nam libero.";
 
 // create the schema for new posts
@@ -63,7 +62,7 @@ app.get("/", function(req,res) {
         if (err) {
           console.log("Error in getting home content from the writer collection.");
         }
-        else if (homeInfo == null) {
+        else if (homeInfo == null) { //if there are no saved home entries, display default home entry
           res.render("home", {homePage: homeContent, totalPosts: postArr});
           postArr = []; //to prevent repeated docs being displayed every time we redirect to home page
         }
@@ -85,7 +84,18 @@ app.post("/composeBtn", function(req,res) {
 
 //access /about thru href defined in header.ejs
 app.get("/about", function(req,res) {
-  res.render("about", {aboutPage1: aboutContent1, aboutPage2: aboutContent2});
+  Writer.findOne({"title": "About"}, {}, { sort:{'_id': -1} }, function(err, aboutInfo) { //find the latest about me entry in writers collection
+    if (err) {
+      console.log("Error in getting about content from the writer collection.");
+    }
+    else if (aboutInfo == null) { //if there are no saved about me entries, display default about me entry
+      res.render("about", {aboutPage: aboutContent});
+    }
+    else {
+      aboutContent = aboutInfo.body;
+      res.render("about", {aboutPage: aboutContent});
+    }
+  });
 });
 
 //access /contact thru href defined in header.ejs
@@ -173,7 +183,7 @@ app.post("/editPost", function(req,res) {
   });
 });
 
-// access /editHome from home.ejs
+// access /editHome from home.ejs's href tag
 app.get("/editHome", function(req,res) {
   res.render("editHome");
 });
@@ -191,6 +201,26 @@ app.post("/editHome", function(req,res) {
     if (!err) {
       homeContent = req.body.inputHome;
       res.redirect("/");
+    }
+  });
+});
+
+// access /editAbout from about.ejs's href tag
+app.get("/editAbout", function(req, res) {
+  res.render("editAbout");
+});
+
+// post requests on /editAbout are from editAbout.ejs
+app.post("/editAbout", function(req,res) {
+  let writer = new Writer ({
+    title: "About",
+    body: req.body.inputAbout
+  });
+
+  writer.save(function(err) {
+    if (!err) {
+      aboutContent = req.body.inputAbout;
+      res.redirect("/about");
     }
   });
 });
