@@ -3,11 +3,9 @@
 <div>
     <p> <%= homePage %> <a href="/editHome">Edit</a></p>
 </div>
-<div>
-  <form action="/composeBtn" method="post">
-    <button type="submit" class="btn btn-primary btn-xs">New Post</button>
-  </form>
-</div>
+<form action="/composeBtn" method="post">
+  <button type="submit" class="btn btn-primary btn-xs">New Post</button>
+</form>
 <div>
   <% totalPosts.forEach(function(post) { %>
       <h2 class="playfairFont"> <%= post.title %> </h2>

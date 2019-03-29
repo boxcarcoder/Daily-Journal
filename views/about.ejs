@@ -1,6 +1,9 @@
 <%- include('partials/header'); -%>
 <h1 class="playfairFont" >About Me</h1>
 <div>
-    <p> <%= aboutPage %> <a href="/editAbout"> Edit</a> </p>
+  <p style="white-space: pre-line"><%= aboutPage %></p>
 </div>
+<form action="/editAbout" method="post">
+  <button style="submit" class="btn btn-primary btn-xs">Edit</button>
+</form>
 <%- include('partials/footer'); -%>

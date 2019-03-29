@@ -10,9 +10,10 @@ var postArr = [];
 var currentPostTitle;
 var currentPostBody;
 
+// default content if no edits are saved in the writer collection
 var homeContent = "Welcome to my personal blog. The webpages you see here, as well as the database to store blog posts, are all set up by me! I am an aspiring software engineer, on the journey to better myself every day. Whether it's honing my programming skills, practicing photo compositions, or reading books on my hobbies, it is time to improve myself on a regular basis. I created this blog website to keep track of my progress on all facets. ";
-var aboutContent = "My name is Brendan Cheng and I am currently 24 years of age. Professionally, I am a software engineer currently in the aerospace industry, primarily programming in C++. I am currently putting my focus into web development, learning full stack development. The thought of being able to create my own web applications is very exciting! The possibilities seem endless to what I can create. Outside of software engineering, I am developing a passion for media, with a focus on photo composition and film composition. Memories are precious, so why not take the best photos? I am also interested in film composition so I can create videos that I can share. Sharing is caring after all!"
-var contactContent = "Scelerisque eleifend donec pretium vulputate sapien. Rhoncus urna neque viverra justo nec ultrices. Arcu dui vivamus arcu felis bibendum. Consectetur adipiscing elit duis tristique. Risus viverra adipiscing at in tellus integer feugiat. Sapien nec sagittis aliquam malesuada bibendum arcu vitae. Consequat interdum varius sit amet mattis. Iaculis nunc sed augue lacus. Interdum posuere lorem ipsum dolor sit amet consectetur adipiscing elit. Pulvinar elementum integer enim neque. Ultrices gravida dictum fusce ut placerat orci nulla. Mauris in aliquam sem fringilla ut morbi tincidunt. Tortor posuere ac ut consequat semper viverra nam libero.";
+var aboutContent = "My name is Brendan Cheng and I am currently 24 years of age. Professionally, I am a software engineer currently in the aerospace industry, primarily programming in C++. I am currently putting my focus into web development, learning full stack development. The thought of being able to create my own web applications is very exciting! The possibilities seem endless to what I can create. \n\n Outside of software engineering, I am developing a passion for media, with a focus on photo composition and film composition. Memories are precious, so why not take the best photos? I am also interested in film composition so I can create videos that I can share. Sharing is caring after all!"
+var contactContent = "Email: brendancheng333@gmail.com \n\n Portfolio: https://github.com/boxcarcoder";
 
 // create the schema for new posts
 const postSchema = new mongoose.Schema({
@@ -76,7 +77,7 @@ app.get("/", function(req,res) {
   });
 });
 
-//post requests on /composeBtn are from the form action in home.ejs
+//post requests to /composeBtn are from the form action in home.ejs
 app.post("/composeBtn", function(req,res) {
   //when there is a post request to /composeBtn (defined in home.ejs), redirect to compose page
   res.redirect("/compose");
@@ -100,7 +101,18 @@ app.get("/about", function(req,res) {
 
 //access /contact thru href defined in header.ejs
 app.get("/contact", function(req,res) {
-  res.render("contact", {contactPage: contactContent});
+  Writer.findOne({"title": "Contact"}, {}, { sort:{'_id': -1} }, function(err, contactInfo) {
+    if (err) {
+      console.log("Error in getting contact content from the writer collection.");
+    }
+    else if (contactInfo == null) {
+      res.render("contact", {contactPage: contactContent});
+    }
+    else {
+      contactContent = contactInfo.body;
+      res.render("contact", {contactPage: contactContent});
+    }
+  });
 });
 
 //access /compose thru href defined in header.ejs
@@ -108,7 +120,7 @@ app.get("/compose", function(req, res) {
   res.render("compose");
 });
 
-//post requests on /compose are from the form action in compose.ejs
+//post requests to /compose are from the form action in compose.ejs
 app.post("/compose", function(req,res) {
 
   // use the Post model to create a new post document
@@ -141,11 +153,9 @@ app.get("/posts/:postID", function(req,res) {
   });
 });
 
-//post requests on /delete are from the form action in post.ejs
+//post requests to /deletePost are from the form action in post.ejs
 //when delete is pressed, delete from collection and redirect to home page
-app.post("/delete", function(req,res) {
-
-  //delete the document specified by the post title from Post collection
+app.post("/deletePost", function(req,res) {
   //currentPostTitle is found when we go to a post's individual page
   Post.findOneAndDelete({"title" : currentPostTitle}, function(err) {
     if (!err) {
@@ -158,17 +168,16 @@ app.post("/delete", function(req,res) {
 
 });
 
-//post requests on /editBtn are from the form action in post.ejs
-//when edit is pressed, render the edit page
-app.post("/edit", function(req, res) {
+//post requests to /editPost are from the form action in post.ejs
+app.post("/editPost", function(req, res) {
   //currentPostTitle is found when we go to a post's individual page
-  res.render("edit", {postTitle: currentPostTitle, postContent: currentPostBody});
+  res.render("editPost", {postTitle: currentPostTitle, postContent: currentPostBody});
 
 });
 
-// now that edit page is rendered, it will provide a post method to /editPost
-//post requests on /editPost are from the form action in edit.ejs
-app.post("/editPost", function(req,res) {
+// now that editPost page is rendered, it will provide a post method to /editPost
+//post requests to /editPost2 are from the form action in editPost.ejs
+app.post("/editPost2", function(req,res) {
 
   //update the document specified by the post title from Post collection
   //update the body field of the document with currentPostTitle as its title
@@ -188,7 +197,7 @@ app.get("/editHome", function(req,res) {
   res.render("editHome");
 });
 
-// post requests on /editHome are from editHome.ejs
+// post requests to /editHome are from editHome.ejs
 app.post("/editHome", function(req,res) {
   // use the writer model to create a new writerInfo document
   let writer = new Writer ({
@@ -205,13 +214,13 @@ app.post("/editHome", function(req,res) {
   });
 });
 
-// access /editAbout from about.ejs's href tag
-app.get("/editAbout", function(req, res) {
+// post requests to /editAbout are from about.ejs's form action
+app.post("/editAbout", function(req, res) {
   res.render("editAbout");
 });
 
-// post requests on /editAbout are from editAbout.ejs
-app.post("/editAbout", function(req,res) {
+// post requests to /editAbout are from editAbout.ejs
+app.post("/editAbout2", function(req,res) {
   let writer = new Writer ({
     title: "About",
     body: req.body.inputAbout
@@ -221,6 +230,27 @@ app.post("/editAbout", function(req,res) {
     if (!err) {
       aboutContent = req.body.inputAbout;
       res.redirect("/about");
+    }
+  });
+});
+
+
+// post requests to /editContact are from contact.ejs
+app.post("/editContact", function(req, res) {
+  res.render("editContact");
+});
+
+// post requests to /editContact2 is from editContact.ejs
+app.post("/editContact2", function(req, res) {
+  let writer = new Writer ({
+    title: "Contact",
+    body: req.body.inputContact
+  });
+
+  writer.save(function(err) {
+    if (!err) {
+      contactContent = req.body.inputContact;
+      res.redirect("/contact");
     }
   });
 });
