@@ -214,13 +214,13 @@ app.post("/editHome", function(req,res) {
   });
 });
 
-// post requests to /editAbout are from about.ejs's form action
-app.post("/editAbout", function(req, res) {
+// get requests to /editAbout are from about.ejs's form action
+app.get("/editAbout", function(req, res) {
   res.render("editAbout");
 });
 
 // post requests to /editAbout are from editAbout.ejs
-app.post("/editAbout2", function(req,res) {
+app.post("/editAbout", function(req,res) {
   let writer = new Writer ({
     title: "About",
     body: req.body.inputAbout
@@ -235,13 +235,13 @@ app.post("/editAbout2", function(req,res) {
 });
 
 
-// post requests to /editContact are from contact.ejs
-app.post("/editContact", function(req, res) {
+// get requests to /editContact are from contact.ejs
+app.get("/editContact", function(req, res) {
   res.render("editContact");
 });
 
-// post requests to /editContact2 is from editContact.ejs
-app.post("/editContact2", function(req, res) {
+// post requests to /editContact is from editContact.ejs
+app.post("/editContact", function(req, res) {
   let writer = new Writer ({
     title: "Contact",
     body: req.body.inputContact
